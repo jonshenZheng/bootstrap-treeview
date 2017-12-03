@@ -31,6 +31,8 @@
 
 		injectStyle: true,
 
+		iconInd : 'r',
+
 		levels: 2,
 
 		expandIcon: 'glyphicon glyphicon-plus',
@@ -501,6 +503,29 @@
 		this.buildTree(this.tree, 0);
 	};
 
+	Tree.prototype.renderExpandIcon = function(node,treeItem){
+		var classList = [],
+			_this = this;
+
+		if (node.nodes) {
+			classList.push('expand-icon');
+			if (node.state.expanded) {
+				classList.push(_this.options.collapseIcon);
+			}
+			else {
+				classList.push(_this.options.expandIcon);
+			}
+		}
+		else {
+			classList.push(_this.options.emptyIcon);
+		}
+
+		treeItem
+			.append($(_this.template.icon)
+				.addClass(classList.join(' '))
+			);
+	}
+
 	// Starting from the root node, and recursing down the
 	// structure we build the tree one node at a time
 	Tree.prototype.buildTree = function (nodes, level) {
@@ -523,10 +548,16 @@
 			// Add indent/spacer to mimic tree structure
 			for (var i = 0; i < (level - 1); i++) {
 				treeItem.append(_this.template.indent);
+				treeItem.addClass('child');
 			}
 
+			if(_default.settings.iconInd === 'l'){
+				_this.renderExpandIcon(node,treeItem);
+			}
+			
+
 			// Add expand, collapse or empty spacer icons
-			var classList = [];
+			/*var classList = [];
 			if (node.nodes) {
 				classList.push('expand-icon');
 				if (node.state.expanded) {
@@ -543,7 +574,7 @@
 			treeItem
 				.append($(_this.template.icon)
 					.addClass(classList.join(' '))
-				);
+				);*/
 
 
 			// Add node icon
@@ -593,7 +624,11 @@
 			else {
 				// otherwise just text
 				treeItem
-					.append(node.text);
+					.append('<span class="node-name">'+node.text+'</span>');
+			}
+
+			if(_default.settings.iconInd === 'r'){
+				_this.renderExpandIcon(node,treeItem);
 			}
 
 			// Add tags as badges

@@ -2,8 +2,12 @@
 <html>
   <head>
     <title>Bootstrap Tree View</title>
-    <link href="./bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link href="./css/bootstrap-treeview.css" rel="stylesheet">
+    <style type="text/css">
+    	.child{background-color: #ddd}
+    </style>
   </head>
   <body>
   	<div class="container">
@@ -16,12 +20,16 @@
         </div>
       </div>
     </div>
-    <script src="./bower_components/jquery/dist/jquery.js"></script>
+    <script src="./js/jquery.js"></script>
   	<script src="./js/bootstrap-treeview.js"></script>
   	<script type="text/javascript">
 
       function buildDomTree() {
          
+        /*var data = [
+        	{id:'1',text:'一级节点1',node:[{id:'2',text:'二级节点1',node:''},{id:'3',text:'二级节点2',node:''}]},
+        	{id:'4',text:'一级节点2',node:[{id:'5',text:'二级节点1',node:''},{id:'6',text:'二级节点2',node:''}]}
+        	];*/
         var data = [];
 
         function walk(nodes, data) {
@@ -41,6 +49,7 @@
         }
 
         walk($('html')[0].children, data);
+
         return data;
       }
 
