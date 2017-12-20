@@ -32,6 +32,8 @@
 		injectStyle: true,
 
 		levels: 2,
+		
+		iconInd : 'l',
 
 		expandIcon: 'glyphicon glyphicon-plus',
 		collapseIcon: 'glyphicon glyphicon-minus',
@@ -150,7 +152,7 @@
 
 		this.tree = [];
 		this.nodes = [];
-
+	 
 		if (options.data) {
 			if (typeof options.data === 'string') {
 				options.data = $.parseJSON(options.data);
@@ -500,6 +502,29 @@
 		// Build tree
 		this.buildTree(this.tree, 0);
 	};
+	
+	Tree.prototype.renderExpandIcon = function(node,treeItem){
+		var classList = [],
+			_this = this;
+
+		if (node.nodes) {
+			classList.push('expand-icon');
+			if (node.state.expanded) {
+				classList.push(_this.options.collapseIcon);
+			}
+			else {
+				classList.push(_this.options.expandIcon);
+			}
+		}
+		else {
+			classList.push(_this.options.emptyIcon);
+		}
+
+		treeItem
+			.append($(_this.template.icon)
+				.addClass(classList.join(' '))
+			);
+	};
 
 	// Starting from the root node, and recursing down the
 	// structure we build the tree one node at a time
@@ -517,6 +542,7 @@
 				.addClass(node.state.disabled ? 'node-disabled': '')
 				.addClass(node.state.selected ? 'node-selected' : '')
 				.addClass(node.searchResult ? 'search-result' : '') 
+				.addClass('level'+level) 
 				.attr('data-nodeid', node.nodeId)
 				.attr('style', _this.buildStyleOverride(node));
 
@@ -525,25 +551,9 @@
 				treeItem.append(_this.template.indent);
 			}
 
-			// Add expand, collapse or empty spacer icons
-			var classList = [];
-			if (node.nodes) {
-				classList.push('expand-icon');
-				if (node.state.expanded) {
-					classList.push(_this.options.collapseIcon);
-				}
-				else {
-					classList.push(_this.options.expandIcon);
-				}
+			if(_this.options.iconInd === 'l'){
+				_this.renderExpandIcon(node,treeItem);
 			}
-			else {
-				classList.push(_this.options.emptyIcon);
-			}
-
-			treeItem
-				.append($(_this.template.icon)
-					.addClass(classList.join(' '))
-				);
 
 
 			// Add node icon
@@ -594,6 +604,11 @@
 				// otherwise just text
 				treeItem
 					.append(node.text);
+			}
+			
+			
+			if(_this.options.iconInd === 'r'){
+				_this.renderExpandIcon(node,treeItem);
 			}
 
 			// Add tags as badges
@@ -695,7 +710,7 @@
 		badge: '<span class="badge"></span>'
 	};
 
-	Tree.prototype.css = '.treeview .list-group-item{cursor:pointer}.treeview span.indent{margin-left:10px;margin-right:10px}.treeview span.icon{width:12px;margin-right:5px}.treeview .node-disabled{color:silver;cursor:not-allowed}'
+	Tree.prototype.css = '.treeview .list-group-item{cursor:pointer}.treeview span.indent{margin-left:10px;margin-right:10px}.treeview span.icon{width:12px;margin-right:5px}.treeview .node-disabled{color:silver;cursor:not-allowed}';
 
 
 	/**
@@ -920,8 +935,8 @@
 			while (parentNode) {
 				this.setExpandedState(parentNode, true, options);
 				parentNode = this.getParent(parentNode);
-			};
-		}, this));
+            }
+        }, this));
 
 		this.render();
 	};
